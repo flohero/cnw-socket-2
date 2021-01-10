@@ -63,11 +63,13 @@ int main(int argc, char *argv[]) {
   int input = sfd;
   int output = OUT;
   while (running) {
+    bytes_read = 0;
+    bytes_written = 0;
     bytes_read = read(input, buf, BUF_SIZE);
     if (bytes_read < 0) {
       close(sfd);
       exit(EXIT_FAILURE);
-    } else if (bytes_read == 0) {
+    } else if (bytes_read == 0) { // Need to press enter at the end, or it wont work
       running = 0;
       continue;
     }
