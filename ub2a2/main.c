@@ -110,26 +110,3 @@ static void handler_sigchld(int signum) {
   errno = saved_errno;
   client_count--;
 }
-
-// Here for debugging
-// Maybe delete
-void print_ip_addr(const struct sockaddr *sock_add) {
-  switch (sock_add->sa_family) {
-    case AF_INET: {
-      char str_addr[INET_ADDRSTRLEN];
-      struct sockaddr_in *sa = (struct sockaddr_in *) sock_add;
-      inet_ntop(AF_INET, &(sa->sin_addr), str_addr, INET_ADDRSTRLEN);
-      printf("%s:%d\n", str_addr, ntohs(sa->sin_port));
-      break;
-    }
-    case AF_INET6: {
-      char str_addr[INET6_ADDRSTRLEN];
-      struct sockaddr_in6 *sa = (struct sockaddr_in6 *) sock_add;
-      inet_ntop(AF_INET6, &((sa)->sin6_addr), str_addr, INET6_ADDRSTRLEN);
-      printf("%s:%d\n", str_addr, ntohs(sa->sin6_port));
-      break;
-    }
-    default:
-      fprintf(stderr, "Address Family not implemented\n");
-  }
-}

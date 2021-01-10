@@ -11,6 +11,8 @@
 #define IN 0
 #define OUT 1
 
+extern void comm(int tfd, int nfd);
+
 int main(int argc, char *argv[]) {
   struct addrinfo hints;
   struct addrinfo *result, *rp;
@@ -60,38 +62,7 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  int running = 1;
-  int input = sfd;
-  int output = OUT;
-  while (running) {
-    bytes_read = read(input, buf, BUF_SIZE);
-    if (bytes_read < 0) {
-      close(sfd);
-      exit(EXIT_FAILURE);
-    } else if (bytes_read == 0) { // Need to press enter at the end, or it wont work
-      running = 0;
-      continue;
-    }
-
-    bytes_written = write(output, buf, (size_t) bytes_read);
-    //  if read and written bytes are not equal stop
-    if (bytes_written != bytes_read) {
-      close(sfd);
-      exit(EXIT_FAILURE);
-    }
-
-    // For read/write to server/socket
-    if (input == IN) {
-      // Write hangman result
-      input = sfd;
-      output = OUT;
-    } else {
-      // Get input from user
-      // And write it to socket
-      input = IN;
-      output = sfd;
-    }
-  }
+  comm(IN, sfd);
   close(sfd);
   exit(EXIT_SUCCESS);
 }
