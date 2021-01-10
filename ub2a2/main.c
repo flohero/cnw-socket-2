@@ -6,8 +6,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <wait.h>
-#include <errno.h>
-
+#include "../WordCheck.c"
 
 #define MAX_CONN 1
 
@@ -16,6 +15,8 @@ extern void serve(int fd);
 void print_ip_addr(const struct sockaddr *sock_add);
 static void handler_sigchld(int signum);
 
+// Total Client count
+int client_count = 0;
 
 int main(int argc, char *argv[]) {
   struct addrinfo hints;
@@ -82,6 +83,7 @@ int main(int argc, char *argv[]) {
     if (new_client < 0) {
       running = 0;
     } else {
+      client_count++;
       int pid = fork();
       // If pid == 0, then this is the child
       if (pid == 0) {
@@ -90,6 +92,7 @@ int main(int argc, char *argv[]) {
         close(new_client);
         exit(0); // Child is finished
       } else if (pid > 0) {
+        printf("Client Count: %d\n", client_count); // Print the client count
         close(new_client);
       } else {
         // fork was not successful
@@ -105,6 +108,7 @@ static void handler_sigchld(int signum) {
   int saved_errno = errno;
   while ((child_process_id = waitpid(-1, &status , WNOHANG) > 0));
   errno = saved_errno;
+  client_count--;
 }
 
 // Here for debugging
