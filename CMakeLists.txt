@@ -43,4 +43,5 @@ endfunction()
 file(GLOB_RECURSE SRC)
 target(ub2a1)
 target(ub2a2)
+target(ub2a3)
 
